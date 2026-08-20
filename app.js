@@ -16,47 +16,57 @@ function player(name, symbol) {
 
 ///////////function gameboard//////
 
-let gameBoard = ((playerOne, playerTwo, tablet)=> {
-    let score = [0, 0]
+let gameBoard = (()=> {
+    let victoria = "";
     return{
-        tablet,
-        playerOne,
-        playerTwo,
-        seeScore: function () {
-            console.log(`el puntaje actual es: ${playerOne.name}: ${score[0]}, ${playerTwo.name}: ${score[1]}`)
-        },
-        getResult: function () {
-            let revez = tablet[i].length-1;
-            for (let i = 0; i < tablet.length; i++) { 
-                if (tablet[i][0] === playerOne.symbol && tablet[i][1] === playerOne.symbol && tablet[i][2] === playerOne.symbol ||
-                    tablet[0][i] === playerOne.symbol && tablet[1][i] === playerOne.symbol && tablet[2][i] === playerOne.symbol ||
-                    tablet[0][0] === playerOne.symbol && tablet[1][1] === playerOne.symbol && tablet[2][2] === playerOne.symbol ||
-                    tablet[0][revez] === playerOne.symbol && tablet[1][revez-1] === playerOne.symbol && tablet[2][revez-2] === playerOne.symbol
+        getResult: function(game) {
+            for (let i = 0; i < game.tablet.length; i++) { 
+                let revez = game.tablet[i].length-1;
+                if (game.tablet[i][0] === game.playerOne.symbol && game.tablet[i][1] === game.playerOne.symbol && game.tablet[i][2] === game.playerOne.symbol ||
+                    game.tablet[0][i] === game.playerOne.symbol && game.tablet[1][i] === game.playerOne.symbol && game.tablet[2][i] === game.playerOne.symbol ||
+                    game.tablet[0][0] === game.playerOne.symbol && game.tablet[1][1] === game.playerOne.symbol && game.tablet[2][2] === game.playerOne.symbol ||
+                    game.tablet[0][revez] === game.playerOne.symbol && game.tablet[1][revez-1] === game.playerOne.symbol && game.tablet[2][revez-2] === game.playerOne.symbol
                 ) {
-                    score[0] += 1;
-                    playerOne.addScore();
-                    return 
-                }else if (tablet[i][0] === playerTwo.symbol && tablet[i][1] === playerTwo.symbol && tablet[i][2] === playerTwo.symbol ||
-                    tablet[0][i] === playerTwo.symbol && tablet[1][i] === playerTwo.symbol && tablet[2][i] === playerTwo.symbol ||
-                    tablet[0][0] === playerTwo.symbol && tablet[1][1] === playerTwo.symbol && tablet[2][2] === playerTwo.symbol ||
-                    tablet[0][revez] === playerTwo.symbol && tablet[1][revez-1] === playerTwo.symbol && tablet[2][revez-2] === playerTwo.symbol
+                    game.playerOne.addScore();
+                    victoria = game.playerOne.name;
+                    return victoria;
+                }else if (game.tablet[i][0] === game.playerTwo.symbol && game.tablet[i][1] === game.playerTwo.symbol && game.tablet[i][2] === game.playerTwo.symbol ||
+                    game.tablet[0][i] === game.playerTwo.symbol && game.tablet[1][i] === game.playerTwo.symbol && game.tablet[2][i] === game.playerTwo.symbol ||
+                    game.tablet[0][0] === game.playerTwo.symbol && game.tablet[1][1] === game.playerTwo.symbol && game.tablet[2][2] === game.playerTwo.symbol ||
+                    game.tablet[0][revez] === game.playerTwo.symbol && game.tablet[1][revez-1] === game.playerTwo.symbol && game.tablet[2][revez-2] === game.playerTwo.symbol
                 ) {
-                    score[1] += 1;
-                    playerTwo.addScore();
-                    return 
+                    game.playerTwo.addScore();
+                    victoria = game.playerOne.name;
+                    return victoria;
                 }
             }
+        },
+        getScore: function() {
+            return score;
         }
     }
 })();
 
+function game(nameOne ,symbolOne , nameTwo, symbolTwo, tablet) {
+    let playerOne = player(nameOne, symbolOne)
+    let playerTwo = player(nameTwo, symbolTwo)
+    return{
+        playerOne,
+        playerTwo,
+        tablet
+    }
+}
 
 
-let jugador1 = player("andres", "X")
-let jugador2 = player("maria", "O")
+//let jugador1 = player("andres", "X")
+//let jugador2 = player("maria", "O")
 
+let game1 = game("andres", "X", "maria", "O", [["X", "X", "X"], ["", "", ""], ["", "", ""]])
+let game2 = game("andres", "O", "maria", "X", [["", "", ""], ["", "", ""], ["O", "O", "O"]])
+let game3 = game("andres", "O", "maria", "X", [["X", "X", "X"], ["", "", ""], ["O", "", "O"]])
+let game4 = game("andres", "O", "maria", "X", [["X", "X", "X"], ["", "", ""], ["O", "", "O"]])
 
-gameBoard(jugador1, jugador2, [["", "", ""], ["", "", ""], ["O", "O", "O"]]);
-
-gameBoard.getResult()
-gameBoard.seeScore()
+console.log(game3)
+console.log(gameBoard.getResult(game4))
+console.log(game4.playerTwo.seeScorePlayer())
+console.log(game4.playerOne.seeScorePlayer())
