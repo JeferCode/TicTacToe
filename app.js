@@ -5,12 +5,6 @@ function player(name, symbol) {
     return {
         name,
         symbol,
-        addScore: function() {
-            scorePlayer += 1;
-        },
-        seeScorePlayer: function() {
-            console.log(scorePlayer);
-        },
     }
 }
 
@@ -18,8 +12,9 @@ function player(name, symbol) {
 
 let gameBoard = (()=> {
     let victoria = "";
-    return{
-        getResult: function(game) {
+    let puntuacionPlayerOne = 0;
+    let puntuacionPlayerTwo = 0;
+    function definResult(game) {
             for (let i = 0; i < game.tablet.length; i++) { 
                 let revez = game.tablet[i].length-1;
                 if (game.tablet[i][0] === game.playerOne.symbol && game.tablet[i][1] === game.playerOne.symbol && game.tablet[i][2] === game.playerOne.symbol ||
@@ -27,7 +22,7 @@ let gameBoard = (()=> {
                     game.tablet[0][0] === game.playerOne.symbol && game.tablet[1][1] === game.playerOne.symbol && game.tablet[2][2] === game.playerOne.symbol ||
                     game.tablet[0][revez] === game.playerOne.symbol && game.tablet[1][revez-1] === game.playerOne.symbol && game.tablet[2][revez-2] === game.playerOne.symbol
                 ) {
-                    game.playerOne.addScore();
+                    puntuacionPlayerOne += 1;
                     victoria = game.playerOne.name;
                     return victoria;
                 }else if (game.tablet[i][0] === game.playerTwo.symbol && game.tablet[i][1] === game.playerTwo.symbol && game.tablet[i][2] === game.playerTwo.symbol ||
@@ -35,15 +30,18 @@ let gameBoard = (()=> {
                     game.tablet[0][0] === game.playerTwo.symbol && game.tablet[1][1] === game.playerTwo.symbol && game.tablet[2][2] === game.playerTwo.symbol ||
                     game.tablet[0][revez] === game.playerTwo.symbol && game.tablet[1][revez-1] === game.playerTwo.symbol && game.tablet[2][revez-2] === game.playerTwo.symbol
                 ) {
-                    game.playerTwo.addScore();
-                    victoria = game.playerOne.name;
+                    puntuacionPlayerTwo += 1;
+                    victoria = game.playerTwo.name;
                     return victoria;
                 }
             }
-        },
-        getScore: function() {
-            return score;
+        };
+        function getScore(game) {
+            return `${game.playerOne.name}: ${puntuacionPlayerOne} vs ${game.playerTwo.name}: ${puntuacionPlayerTwo}`;
         }
+    return{
+        definResult,
+        getScore
     }
 })();
 
@@ -66,7 +64,9 @@ let game2 = game("andres", "O", "maria", "X", [["", "", ""], ["", "", ""], ["O",
 let game3 = game("andres", "O", "maria", "X", [["X", "X", "X"], ["", "", ""], ["O", "", "O"]])
 let game4 = game("andres", "O", "maria", "X", [["X", "X", "X"], ["", "", ""], ["O", "", "O"]])
 
-console.log(game3)
-console.log(gameBoard.getResult(game4))
-console.log(game4.playerTwo.seeScorePlayer())
-console.log(game4.playerOne.seeScorePlayer())
+console.log(gameBoard.definResult(game1))
+console.log(gameBoard.getScore(game1))
+console.log(gameBoard.definResult(game2))
+console.log(gameBoard.getScore(game2))
+console.log(gameBoard.definResult(game3))
+console.log(gameBoard.getScore(game3))
