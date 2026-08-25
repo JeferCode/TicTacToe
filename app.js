@@ -1,5 +1,8 @@
 let tabla = document.getElementById("tabla")
 let celdas = document.querySelectorAll(".celda")
+let gamerOne = document.getElementById("nombre-jugado1");
+let gamerTwo = document.getElementById("nombre-jugado2");
+let btnIniciar = document.getElementById("iniciar")
 
 ///////////finction player////////
 
@@ -16,47 +19,57 @@ let gameBoard = (() => {
     let puntuacionPlayerOne = 0;
     let puntuacionPlayerTwo = 0;
 
-    function definResult(game) {
-        if (hasWon().test(game.playerOne, game.tablet)) {
+    function definResult() {
+        if (hasWon().test(game.getPLayers().playerOne.symbol)) {
             puntuacionPlayerOne += 1;
-            return game.playerOne.name;
-        } else if (hasWon().test(game.playerTwo, game.tablet)) {
+            console.log(game.getPLayers().playerOne.name);
+            return;
+        } else if (hasWon().test(game.getPLayers().playerTwo.symbol)) {
             puntuacionPlayerTwo += 1;
-            return game.playerTwo.name;
-        } else if (celdas !== "") {
+            console.log(game.getPLayers().playerTwo.name);
+            return;
+        } else if (!game.emptySpaces()) {
             return "Enpate"
         }
     };
 
     function getScore(game) {
-        return `${game.playerOne.name}: ${puntuacionPlayerOne} vs ${game.playerTwo.name}: ${puntuacionPlayerTwo}`;
+        return `${game.getPLayers.playerOne.name}: ${puntuacionPlayerOne} vs ${game.playerTwo.name}: ${puntuacionPlayerTwo}`;
     }
 
-    function Draw(symbol, celda) {
-        celda.textContent = `${symbol}`
+    function show(tablet) {
+        tablet.forEach((element, i) => {
+            celdas[i].textContent = element;
+        })
+        definResult()
     }
 
     return {
         definResult,
         getScore,
-        Draw,
+        show
     }
 })();
 
 
 function hasWon() {
-    function test(player, tablet) {
-        for (let i = 0; i < tablet.length; i++) {
-            let revez = tablet[i].length - 1;
-            if (tablet[i][0] === player.symbol && tablet[i][1] === player.symbol && tablet[i][2] === player.symbol) {
-                return true;
-            } else if (tablet[0][i] === player.symbol && tablet[1][i] === player.symbol && tablet[2][i] === player.symbol) {
-                return true;
-            } else if (tablet[0][0] === player.symbol && tablet[1][1] === player.symbol && tablet[2][2] === player.symbol) {
-                return true;
-            } else if (tablet[0][revez] === player.symbol && tablet[1][revez - 1] === player.symbol && tablet[2][revez - 2] === player.symbol) {
-                return true;
-            }
+    function test(player) {
+        if (game.getTablet()[0] === player && game.getTablet()[1] === player && game.getTablet()[2] === player) {
+            return true;
+        } else if (game.getTablet()[3] === player && game.getTablet()[4] === player && game.getTablet()[5] === player) {
+            return true;
+        } else if (game.getTablet()[6] === player && game.getTablet()[7] === player && game.getTablet()[8] === player) {
+            return true;
+        } else if (game.getTablet()[0] === player && game.getTablet()[3] === player && game.getTablet()[6] === player) {
+            return true;
+        } else if (game.getTablet()[1] === player && game.getTablet()[4] === player && game.getTablet()[7] === player) {
+            return true;
+        } else if (game.getTablet()[2] === player && game.getTablet()[5] === player && game.getTablet()[8] === player) {
+            return true;
+        } else if (game.getTablet()[0] === player && game.getTablet()[4] === player && game.getTablet()[8] === player) {
+            return true;
+        } else if (game.getTablet()[2] === player && game.getTablet()[4] === player && game.getTablet()[6] === player) {
+            return true;
         }
         return false;
     }
@@ -65,37 +78,23 @@ function hasWon() {
     }
 }
 
-function game(playerOne, playerTwo) {
-    let tablet = [["", "", ""], ["", "", ""], ["", "", ""]]
+let game = (() => {
+    let tablet = ["", "", "", "", "", "", "", "", ""]
     let actual = "X";
-    function tabletDising(celda, lugar, arry) {
+    let playerOne = player(gamerOne.value, "X")
+    let playerTwo = player(gamerTwo.value, "O")
+    function tabletDising(celda, lugar) {
         if (celda.textContent === "") {
-            if (lugar <= 2) {
-                tablet[0][arry] = actual;
-                gameBoard.Draw(actual, celda)
-                if (actual === "X") {
-                    actual = "O"
-                } else {
-                    actual = "X";
-                }
-            } else if (lugar <= 5 && lugar > 2) {
-                tablet[1][arry] = actual;
-                gameBoard.Draw(actual, celda)
-                if (actual === "X") {
-                    actual = "O"
-                } else {
-                    actual = "X";
-                }
-            } else if (lugar > 5) {
-                tablet[2][arry] = actual;
-                gameBoard.Draw(actual, celda)
-                if (actual === "X") {
-                    actual = "O"
-                } else {
-                    actual = "X";
-                }
+            tablet[lugar] = actual;
+            if (gameBoard.definResult() !== game.getPLayers().playerOne.name || gameBoard.definResult() == game.getPLayers().playerTwo.name){
+                gameBoard.show(tablet)
             }
-        }else{
+            if (actual === "X") {
+                actual = "O"
+            } else {
+                actual = "X";
+            }
+        } else {
             return
         }
         console.log(tablet)
@@ -103,31 +102,47 @@ function game(playerOne, playerTwo) {
     function getCurrentSymbol() {
         return actual;
     }
+
+    function getTablet() {
+        return tablet;
+    }
+    function getPLayers() {
+        return {
+            playerOne,
+            playerTwo
+        }
+    }
+    function emptySpaces() {
+        return tablet.some(element => element !== "X" && element !== "O")
+    }
     return {
-        playerOne,
-        playerTwo,
-        tablet,
         tabletDising,
-        getCurrentSymbol
+        getCurrentSymbol,
+        getTablet,
+        getPLayers,
+        emptySpaces
+    }
+})()
+
+
+function startGame() {
+    function Start() {
+        celdas.forEach(celda => {
+            celda.addEventListener("click", () => {
+                let lugar = Number(celda.dataset.id);
+                game.tabletDising(celda, lugar)
+                console.log(gameBoard.definResult())
+
+            })
+        })
+    }
+    return{
+        Start
     }
 }
 
-
-let datos = celdas.forEach(celda => {
-    celda.addEventListener("click", () => {
-        let lugar = Number(celda.dataset.id);
-        let lugarArray = Number(celda.dataset.array);
-        game1.tabletDising(celda, lugar, lugarArray)
-        
-    })
+btnIniciar.addEventListener("click", ()=>{
+    if (gamerOne.value !== "" && gamerTwo.value !== "") {
+        startGame().Start()
+    }
 })
-
-
-
-let jugador1 = player("andres", "X")
-let jugador2 = player("maria", "O")
-
-let game1 = game(jugador1, jugador2)
-
-
-//console.log(gameBoard.definResult(game1))
