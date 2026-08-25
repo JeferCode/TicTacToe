@@ -1,5 +1,6 @@
-let tabla = document.getElementById("tabla")
-let celdas = document.querySelectorAll(".celda")
+let tabla = document.getElementById("tabla");
+let celdas = document.querySelectorAll(".celda");
+let btnNewGame = document.getElementById("new-game");
 
 ///////////finction player////////
 
@@ -34,6 +35,10 @@ let gameBoard = (() => {
 
     function Draw(symbol, celda) {
         celda.textContent = `${symbol}`
+    }
+
+    function show(tablet) {
+        
     }
 
     return {
@@ -109,6 +114,12 @@ function game(playerOne, playerTwo) {
         tablet,
         tabletDising,
         getCurrentSymbol
+    }
+}
+
+function askWinner() {
+    function ask(game) {
+        gameBoard.definResult(game)
     }
 }
 
