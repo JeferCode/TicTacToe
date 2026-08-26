@@ -2,7 +2,9 @@ let tabla = document.getElementById("tabla")
 let celdas = document.querySelectorAll(".celda")
 let gamerOne = document.getElementById("nombre-jugado1");
 let gamerTwo = document.getElementById("nombre-jugado2");
-let btnIniciar = document.getElementById("iniciar")
+let btnIniciar = document.getElementById("iniciar");
+let btnNuevaPartida = document.getElementById("nueva-partida");
+let score = document.getElementById("puntuacion");
 
 ///////////finction player////////
 
@@ -18,36 +20,56 @@ function player(name, symbol) {
 let gameBoard = (() => {
     let puntuacionPlayerOne = 0;
     let puntuacionPlayerTwo = 0;
+    let winner = false;
+
+    function WinnerFalse() {
+        winner = false;
+    }
 
     function definResult() {
-        if (hasWon().test(game.getPLayers().playerOne.symbol)) {
-            puntuacionPlayerOne += 1;
-            console.log(game.getPLayers().playerOne.name);
-            return;
-        } else if (hasWon().test(game.getPLayers().playerTwo.symbol)) {
-            puntuacionPlayerTwo += 1;
-            console.log(game.getPLayers().playerTwo.name);
-            return;
-        } else if (!game.emptySpaces()) {
-            return "Enpate"
+        if (!winner) {
+            if (hasWon().test(game.getPLayers().playerOne.symbol)) {
+                puntuacionPlayerOne += 1;
+                winner = true
+                console.log(game.getPLayers().playerOne.name);
+                getScore()
+                return;
+            } else if (hasWon().test(game.getPLayers().playerTwo.symbol)) {
+                puntuacionPlayerTwo += 1;
+                winner = true
+                console.log(game.getPLayers().playerTwo.name);
+                getScore()
+                return;
+            } else if (!game.emptySpaces()) {
+                return "Enpate"
+            }
         }
     };
 
-    function getScore(game) {
-        return `${game.getPLayers.playerOne.name}: ${puntuacionPlayerOne} vs ${game.playerTwo.name}: ${puntuacionPlayerTwo}`;
+    function getScore() {
+        return score.textContent = `${game.getPLayers().playerOne.name}: ${puntuacionPlayerOne} vs ${game.getPLayers().playerTwo.name}: ${puntuacionPlayerTwo}`;
     }
 
     function show(tablet) {
-        tablet.forEach((element, i) => {
-            celdas[i].textContent = element;
-        })
-        definResult()
+        if (!winner) {
+            tablet.forEach((element, i) => {
+                celdas[i].textContent = element;
+            })
+            definResult()
+        }
+    }
+    function newScore() {
+        puntuacionPlayerOne = 0;
+        puntuacionPlayerTwo = 0;
+        getScore()
     }
 
     return {
         definResult,
         getScore,
-        show
+        show,
+        newScore,
+        WinnerFalse
     }
 })();
 
@@ -81,14 +103,10 @@ function hasWon() {
 let game = (() => {
     let tablet = ["", "", "", "", "", "", "", "", ""]
     let actual = "X";
-    let playerOne = player(gamerOne.value, "X")
-    let playerTwo = player(gamerTwo.value, "O")
     function tabletDising(celda, lugar) {
         if (celda.textContent === "") {
             tablet[lugar] = actual;
-            if (gameBoard.definResult() !== game.getPLayers().playerOne.name || gameBoard.definResult() == game.getPLayers().playerTwo.name){
-                gameBoard.show(tablet)
-            }
+            gameBoard.show(tablet, false)
             if (actual === "X") {
                 actual = "O"
             } else {
@@ -102,11 +120,23 @@ let game = (() => {
     function getCurrentSymbol() {
         return actual;
     }
+    function newGame() {
+        iniciar();
+        gamerOne.value = "";
+        gamerTwo.value = "";
+        tablet = ["", "", "", "", "", "", "", "", ""]
+        actual = "X"
+        gameBoard.WinnerFalse();
+        gameBoard.show(tablet)
+        gameBoard.newScore()
+    }
 
     function getTablet() {
         return tablet;
     }
     function getPLayers() {
+        let playerOne = player(gamerOne.value, "X");
+        let playerTwo = player(gamerTwo.value, "O");
         return {
             playerOne,
             playerTwo
@@ -120,12 +150,13 @@ let game = (() => {
         getCurrentSymbol,
         getTablet,
         getPLayers,
-        emptySpaces
+        emptySpaces,
+        newGame
     }
 })()
 
 
-function startGame() {
+function cellVerify() {
     function Start() {
         celdas.forEach(celda => {
             celda.addEventListener("click", () => {
@@ -136,13 +167,25 @@ function startGame() {
             })
         })
     }
-    return{
+    return {
         Start
     }
 }
 
-btnIniciar.addEventListener("click", ()=>{
-    if (gamerOne.value !== "" && gamerTwo.value !== "") {
-        startGame().Start()
-    }
+score.textContent = gameBoard.getScore();
+game.newGame()
+
+function iniciar() {
+    btnIniciar.addEventListener("click", () => {
+        if (gamerOne.value !== "" && gamerTwo.value !== "") {
+            cellVerify().Start()
+            gameBoard.getScore()
+        }
+    })
+}
+
+
+
+btnNuevaPartida.addEventListener("click", () => {
+    game.newGame();
 })
