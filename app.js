@@ -64,6 +64,18 @@ let gameBoard = (() => {
         getScore()
     }
 
+    btnIniciar.addEventListener("click", () => {
+        if (gamerOne.value !== "" && gamerTwo.value !== "") {
+            cellVerify().Start()
+            gameBoard.getScore()
+        }
+    })
+
+    btnNuevaPartida.addEventListener("click", () => {
+        game.newGame();
+    })
+
+
     return {
         definResult,
         getScore,
@@ -104,7 +116,7 @@ let game = (() => {
     let tablet = ["", "", "", "", "", "", "", "", ""]
     let actual = "X";
     function tabletDising(celda, lugar) {
-        if (celda.textContent === "") {
+        if (tablet[lugar] === "") {
             tablet[lugar] = actual;
             gameBoard.show(tablet, false)
             if (actual === "X") {
@@ -113,7 +125,7 @@ let game = (() => {
                 actual = "X";
             }
         } else {
-            return
+            return;
         }
         console.log(tablet)
     }
@@ -121,7 +133,6 @@ let game = (() => {
         return actual;
     }
     function newGame() {
-        iniciar();
         gamerOne.value = "";
         gamerTwo.value = "";
         tablet = ["", "", "", "", "", "", "", "", ""]
@@ -158,14 +169,17 @@ let game = (() => {
 
 function cellVerify() {
     function Start() {
-        celdas.forEach(celda => {
-            celda.addEventListener("click", () => {
-                let lugar = Number(celda.dataset.id);
-                game.tabletDising(celda, lugar)
-                console.log(gameBoard.definResult())
+        if (gamerOne.value !== "" && gamerTwo.value !== "") {
+            celdas.forEach(celda => {
+                celda.addEventListener("click", () => {
+                    let lugar = Number(celda.dataset.id);
+                    game.tabletDising(celda, lugar)
+                    console.log(gameBoard.definResult())
 
+                })
             })
-        })
+        }
+
     }
     return {
         Start
@@ -173,19 +187,5 @@ function cellVerify() {
 }
 
 score.textContent = gameBoard.getScore();
-game.newGame()
-
-function iniciar() {
-    btnIniciar.addEventListener("click", () => {
-        if (gamerOne.value !== "" && gamerTwo.value !== "") {
-            cellVerify().Start()
-            gameBoard.getScore()
-        }
-    })
-}
 
 
-
-btnNuevaPartida.addEventListener("click", () => {
-    game.newGame();
-})
