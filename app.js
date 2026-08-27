@@ -169,16 +169,19 @@ let game = (() => {
 
 function cellVerify() {
     function Start() {
-        if (gamerOne.value !== "" && gamerTwo.value !== "") {
-            celdas.forEach(celda => {
-                celda.addEventListener("click", () => {
-                    let lugar = Number(celda.dataset.id);
-                    game.tabletDising(celda, lugar)
-                    console.log(gameBoard.definResult())
 
-                })
+        celdas.forEach(celda => {
+            celda.addEventListener("click", () => {
+                if (gamerOne.value === "" && gamerTwo.value === ""){
+                    return;
+                }
+                let lugar = Number(celda.dataset.id);
+                game.tabletDising(celda, lugar)
+                console.log(gameBoard.definResult())
+
             })
-        }
+        })
+
 
     }
     return {
