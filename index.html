@@ -10,11 +10,16 @@
 
 <body>
     <div>
-        <label for="nombre-jugado1">INgrese el nombre del primer jugador</label>
-        <input id="nombre-jugado1" type="text">
-        <label for="nombre-jugado2">INgrese el nombre del segundo jugador</label>
-        <input id="nombre-jugado2" type="text">
-        <p id="puntuacion"></p>
+        <div class="container-score">
+            <div>
+                <input id="nombre-jugado1" type="text" value="Player One" autocomplete="off">
+                <h2 id="puntuacion-playerOne">0</h2>
+            </div>
+            <div>
+                <input id="nombre-jugado2" type="text" value="Player Two" autocomplete="off">
+                <h2 id="puntuacion-playerTwo">0</h2>
+            </div>
+        </div>
         <table id="tabla">
             <tr>
                 <tbody>
@@ -39,7 +44,6 @@
             </tr>
         </table>
         <button id="iniciar">Iniciar</button>
-        <button id="nueva-partida">Nuevo Juego</button>
     </div>
     <script src="./app.js"></script>
 </body>

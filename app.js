@@ -3,8 +3,8 @@ let celdas = document.querySelectorAll(".celda")
 let gamerOne = document.getElementById("nombre-jugado1");
 let gamerTwo = document.getElementById("nombre-jugado2");
 let btnIniciar = document.getElementById("iniciar");
-let btnNuevaPartida = document.getElementById("nueva-partida");
-let score = document.getElementById("puntuacion");
+let scoreOne = document.getElementById("puntuacion-playerOne");
+let scoreTwo = document.getElementById("puntuacion-playerTwo");
 
 ///////////finction player////////
 
@@ -15,9 +15,62 @@ function player(name, symbol) {
     }
 }
 
+let Dom = (() => {
+    function tabletDising(lugar) {
+        if (gameBoard.getTablet()[lugar] === "") {
+            if (!gameBoard.getWinner()) {
+                gameBoard.getTablet()[lugar] = game.getCurrentSymbol();
+                show()
+                gameBoard.definResult()
+                console.log(gameBoard.getTablet())
+                if (game.getCurrentSymbol() === "X") {
+                    game.choseSymbol("O");
+                } else {
+                    game.choseSymbol("X");
+                }
+            }
+
+        } else {
+            return;
+        }
+    }
+
+    function show() {
+        if (!gameBoard.getWinner()) {
+            gameBoard.getTablet().forEach((element, i) => {
+                celdas[i].textContent = element;
+            })
+        }
+    }
+
+    celdas.forEach(celda => {
+        celda.addEventListener("click", () => {
+            if (gamerOne.value === "" || gamerTwo.value === "") {
+                return;
+            }
+            let lugar = Number(celda.dataset.id);
+            tabletDising(lugar)
+        })
+    })
+
+    function start() {
+        btnIniciar.addEventListener("click", () => {
+            gameBoard.getScore()
+            game.reStar()
+        })
+    }
+
+    return {
+        tabletDising,
+        show,
+        start
+    }
+})()
+
 ///////////function gameboard//////
 
 let gameBoard = (() => {
+    let tablet = ["", "", "", "", "", "", "", "", ""]
     let puntuacionPlayerOne = 0;
     let puntuacionPlayerTwo = 0;
     let winner = false;
@@ -25,125 +78,91 @@ let gameBoard = (() => {
     function WinnerFalse() {
         winner = false;
     }
+    function getWinner() {
+        return winner;
+    }
+
+    function reStarTablet() {
+        tablet = ["", "", "", "", "", "", "", "", ""]
+    }
+
+    function getTablet() {
+        return tablet;
+    }
 
     function definResult() {
         if (!winner) {
-            if (hasWon().test(game.getPLayers().playerOne.symbol)) {
+            if (hasWon(game.getPLayers().playerOne.symbol)) {
                 puntuacionPlayerOne += 1;
                 winner = true
-                console.log(game.getPLayers().playerOne.name);
                 getScore()
-                return;
-            } else if (hasWon().test(game.getPLayers().playerTwo.symbol)) {
+                return alert(game.getPLayers().playerOne.name);;
+            } else if (hasWon(game.getPLayers().playerTwo.symbol)) {
                 puntuacionPlayerTwo += 1;
-                winner = true
-                console.log(game.getPLayers().playerTwo.name);
+                winner = true;
                 getScore()
-                return;
+                return alert(game.getPLayers().playerTwo.name);;
             } else if (!game.emptySpaces()) {
-                return "Enpate"
+                return alert("Empate")
             }
         }
+
     };
 
+    function hasWon(player) {
+        if (tablet[0] === player && tablet[1] === player && tablet[2] === player) {
+            return true;
+        } else if (tablet[3] === player && tablet[4] === player && tablet[5] === player) {
+            return true;
+        } else if (tablet[6] === player && tablet[7] === player && tablet[8] === player) {
+            return true;
+        } else if (tablet[0] === player && tablet[3] === player && tablet[6] === player) {
+            return true;
+        } else if (tablet[1] === player && tablet[4] === player && tablet[7] === player) {
+            return true;
+        } else if (tablet[2] === player && tablet[5] === player && tablet[8] === player) {
+            return true;
+        } else if (tablet[0] === player && tablet[4] === player && tablet[8] === player) {
+            return true;
+        } else if (tablet[2] === player && tablet[4] === player && tablet[6] === player) {
+            return true;
+        }
+        return false;
+    }
+
+
     function getScore() {
-        return score.textContent = `${game.getPLayers().playerOne.name}: ${puntuacionPlayerOne} vs ${game.getPLayers().playerTwo.name}: ${puntuacionPlayerTwo}`;
+        scoreOne.textContent = puntuacionPlayerOne;
+        scoreTwo.textContent = puntuacionPlayerTwo;
     }
-
-    function show(tablet) {
-        if (!winner) {
-            tablet.forEach((element, i) => {
-                celdas[i].textContent = element;
-            })
-            definResult()
-        }
-    }
-    function newScore() {
-        puntuacionPlayerOne = 0;
-        puntuacionPlayerTwo = 0;
-        getScore()
-    }
-
-    btnIniciar.addEventListener("click", () => {
-        if (gamerOne.value !== "" && gamerTwo.value !== "") {
-            cellVerify().Start()
-            gameBoard.getScore()
-        }
-    })
-
-    btnNuevaPartida.addEventListener("click", () => {
-        game.newGame();
-    })
 
 
     return {
         definResult,
         getScore,
-        show,
-        newScore,
-        WinnerFalse
+        WinnerFalse,
+        getTablet,
+        reStarTablet,
+        getWinner
     }
 })();
 
 
-function hasWon() {
-    function test(player) {
-        if (game.getTablet()[0] === player && game.getTablet()[1] === player && game.getTablet()[2] === player) {
-            return true;
-        } else if (game.getTablet()[3] === player && game.getTablet()[4] === player && game.getTablet()[5] === player) {
-            return true;
-        } else if (game.getTablet()[6] === player && game.getTablet()[7] === player && game.getTablet()[8] === player) {
-            return true;
-        } else if (game.getTablet()[0] === player && game.getTablet()[3] === player && game.getTablet()[6] === player) {
-            return true;
-        } else if (game.getTablet()[1] === player && game.getTablet()[4] === player && game.getTablet()[7] === player) {
-            return true;
-        } else if (game.getTablet()[2] === player && game.getTablet()[5] === player && game.getTablet()[8] === player) {
-            return true;
-        } else if (game.getTablet()[0] === player && game.getTablet()[4] === player && game.getTablet()[8] === player) {
-            return true;
-        } else if (game.getTablet()[2] === player && game.getTablet()[4] === player && game.getTablet()[6] === player) {
-            return true;
-        }
-        return false;
-    }
-    return {
-        test,
-    }
-}
 
 let game = (() => {
-    let tablet = ["", "", "", "", "", "", "", "", ""]
     let actual = "X";
-    function tabletDising(celda, lugar) {
-        if (tablet[lugar] === "") {
-            tablet[lugar] = actual;
-            gameBoard.show(tablet, false)
-            if (actual === "X") {
-                actual = "O"
-            } else {
-                actual = "X";
-            }
-        } else {
-            return;
-        }
-        console.log(tablet)
+    function choseSymbol(symbol) {
+        actual = `${symbol}`;
     }
+
     function getCurrentSymbol() {
         return actual;
     }
-    function newGame() {
-        gamerOne.value = "";
-        gamerTwo.value = "";
-        tablet = ["", "", "", "", "", "", "", "", ""]
+    function reStar() {
+        gameBoard.reStarTablet()
         actual = "X"
         gameBoard.WinnerFalse();
-        gameBoard.show(tablet)
-        gameBoard.newScore()
-    }
-
-    function getTablet() {
-        return tablet;
+        Dom.show()
     }
     function getPLayers() {
         let playerOne = player(gamerOne.value, "X");
@@ -154,41 +173,15 @@ let game = (() => {
         }
     }
     function emptySpaces() {
-        return tablet.some(element => element !== "X" && element !== "O")
+        return gameBoard.getTablet().some(element => element !== "X" && element !== "O")
     }
     return {
-        tabletDising,
+        choseSymbol,
         getCurrentSymbol,
-        getTablet,
         getPLayers,
         emptySpaces,
-        newGame
+        reStar
     }
 })()
 
-
-function cellVerify() {
-    function Start() {
-
-        celdas.forEach(celda => {
-            celda.addEventListener("click", () => {
-                if (gamerOne.value === "" && gamerTwo.value === ""){
-                    return;
-                }
-                let lugar = Number(celda.dataset.id);
-                game.tabletDising(celda, lugar)
-                console.log(gameBoard.definResult())
-
-            })
-        })
-
-
-    }
-    return {
-        Start
-    }
-}
-
-score.textContent = gameBoard.getScore();
-
-
+Dom.start()
