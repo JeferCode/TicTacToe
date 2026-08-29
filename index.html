@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div>
+    <div class="container">
         <div class="container-score">
             <div>
                 <input id="nombre-jugado1" type="text" value="Player One" autocomplete="off">
@@ -20,30 +20,31 @@
                 <h2 id="puntuacion-playerTwo">0</h2>
             </div>
         </div>
-        <table id="tabla">
-            <tr>
-                <tbody>
+        <h2 id="message"></h2>
+        <table id="tabla" class="tablet">
+            <tbody>
+                <tr>
+
                     <td class="celda" data-id="0"></td>
                     <td class="celda" data-id="1"></td>
                     <td class="celda" data-id="2"></td>
-                </tbody>
-            </tr>
-            <tr>
-                <tbody>
+
+                </tr>
+                <tr>
+
                     <td class="celda" data-id="3"></td>
                     <td class="celda" data-id="4"></td>
                     <td class="celda" data-id="5"></td>
-                </tbody>
-            </tr>
-            <tr>
-                <tbody>
+
+                </tr>
+                <tr>
                     <td class="celda" data-id="6"></td>
                     <td class="celda" data-id="7"></td>
                     <td class="celda" data-id="8"></td>
-                </tbody>
-            </tr>
+                </tr>
+            </tbody>
         </table>
-        <button id="iniciar">Iniciar</button>
+        <button id="iniciar" class="start">Iniciar</button>
     </div>
     <script src="./app.js"></script>
 </body>
