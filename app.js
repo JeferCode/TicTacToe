@@ -1,5 +1,5 @@
-let tabla = document.getElementById("tabla")
-let celdas = document.querySelectorAll(".celda")
+let tabla = document.getElementById("tablet")
+let cells = document.querySelectorAll(".cell")
 let gamerOne = document.getElementById("nombre-jugado1");
 let gamerTwo = document.getElementById("nombre-jugado2");
 let btnIniciar = document.getElementById("iniciar");
@@ -44,7 +44,7 @@ let Dom = (() => {
             setTimeout(() => {
                 message.classList.add("noVisible");
                 tabla.classList.remove("noVisible");
-            }, 3000);
+            }, 1000);
         } else {
             message.textContent = `${result} win`;
             tabla.classList.add("noVisible")
@@ -59,7 +59,7 @@ let Dom = (() => {
     function show() {
         if (!gameBoard.getWinner()) {
             gameBoard.getTablet().forEach((element, i) => {
-                celdas[i].textContent = element;
+                cells[i].textContent = element;
             })
         }
     }
@@ -75,12 +75,12 @@ let Dom = (() => {
         })
     }
 
-    celdas.forEach(celda => {
-        celda.addEventListener("click", () => {
+    cells.forEach(cell => {
+        cell.addEventListener("click", () => {
             if (gamerOne.value === "" || gamerTwo.value === "" || started === false) {
                 return;
             }
-            let lugar = Number(celda.dataset.id);
+            let lugar = Number(cell.dataset.id);
             tabletDising(lugar)
         })
     })
